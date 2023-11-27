@@ -54,12 +54,13 @@ func main() {
 		for i, match := range matches {
 			if i == positionInt {
 				l = match
-			}
-		}
 
-		lInt, _ := strconv.Atoi(l)
-		if lInt < 10 {
-			l = "0" + l
+				lInt, _ := strconv.Atoi(l)
+				if lInt < 10 {
+					l = strconv.Itoa(lInt)
+					l = "0" + l
+				}
+			}
 		}
 
 		newPath := dir + "/" + "S" + season + "E" + l + ext
