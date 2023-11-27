@@ -34,6 +34,11 @@ func main() {
 	position = strings.TrimSuffix(position, "\n")
 	positionInt, _ := strconv.Atoi(position)
 
+	fmt.Println("倒退集数")
+	back, _ := reader.ReadString('\n')
+	back = strings.TrimSuffix(back, "\n")
+	backInt, _ := strconv.Atoi(back)
+
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		fmt.Println("读取目录失败:", err)
@@ -56,8 +61,10 @@ func main() {
 				l = match
 
 				lInt, _ := strconv.Atoi(l)
+				lInt = lInt - backInt
+				l = strconv.Itoa(lInt)
+
 				if lInt < 10 {
-					l = strconv.Itoa(lInt)
 					l = "0" + l
 				}
 			}
