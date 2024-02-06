@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/eiannone/keyboard"
+	"log"
 	"os"
 	"path"
 	"regexp"
@@ -22,22 +24,23 @@ func main() {
 	}
 
 	fmt.Println("输入路径")
-	dir, _ := reader.ReadString('\n')
-	dir = strings.TrimSuffix(dir, "\n")
+	dir := getDir()
 
-	fmt.Println("输入关键词")
+	fmt.Println("输入文件中包含的关键词")
 	keyword, _ := reader.ReadString('\n')
 	keyword = strings.TrimSuffix(keyword, "\n")
 
-	fmt.Println("集数位置")
+	fmt.Println("集数所在位置,从0开始")
 	position, _ := reader.ReadString('\n')
 	position = strings.TrimSuffix(position, "\n")
 	positionInt, _ := strconv.Atoi(position)
 
-	fmt.Println("倒退集数")
+	fmt.Println("倒退集数,不倒退填写0")
 	back, _ := reader.ReadString('\n')
 	back = strings.TrimSuffix(back, "\n")
 	backInt, _ := strconv.Atoi(back)
+
+	fmt.Println(season, dir, keyword, position, back)
 
 	files, err := os.ReadDir(dir)
 	if err != nil {
@@ -79,4 +82,60 @@ func main() {
 
 		fmt.Println(newPath)
 	}
+}
+
+func getDir() string {
+	// 开始捕获键盘输入
+	err := keyboard.Open()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer keyboard.Close()
+
+	dir := ""
+	for {
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if key == keyboard.KeyCtrlC {
+			break
+		}
+
+		if key == keyboard.KeyEnter {
+			return dir
+		}
+
+		if key == keyboard.KeyTab {
+			fmt.Println("")
+			files, err := os.ReadDir(dir)
+
+			if err != nil {
+				fmt.Println("读取目录失败:", err)
+				dir = ""
+				continue
+			}
+
+			list := ""
+
+			for _, file := range files {
+				list += file.Name() + " "
+			}
+
+			if len(files) == 1 {
+				dir += "/" + files[0].Name()
+				fmt.Println(dir)
+			} else {
+				dir = ""
+				fmt.Println(list)
+			}
+			continue
+		}
+
+		fmt.Printf("%c", char)
+		dir += fmt.Sprintf("%c", char)
+	}
+
+	return ""
 }
