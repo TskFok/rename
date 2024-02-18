@@ -108,12 +108,15 @@ func getDir() string {
 		}
 
 		if key == keyboard.KeyTab {
-			fmt.Println("")
 			files, err := os.ReadDir(dir)
-
 			if err != nil {
 				fmt.Println("读取目录失败:", err)
+				continue
+			}
+
+			if len(files) == 0 {
 				dir = ""
+				fmt.Println("")
 				continue
 			}
 
@@ -137,5 +140,5 @@ func getDir() string {
 		dir += fmt.Sprintf("%c", char)
 	}
 
-	return ""
+	return dir
 }
