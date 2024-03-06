@@ -14,21 +14,12 @@ linux:
 	go env -w GOPROXY=https://goproxy.cn,direct
 	go mod  tidy
 
-conf-local:
-
-conf-rollback:
-
-build-file:
-	go build -o run -ldflags "-w -s"  -trimpath main.go
-
 build-file-cli:
-	go build -o run -ldflags "-w -s"  -trimpath bin/cli/main.go
+	go build -o rename -ldflags "-w -s"  -trimpath bin/cli/main.go
 
-build-mac: mac conf-local build-file conf-rollback
+build-cli-linux: linux build-file-cli
 
-build-linux: linux conf-local build-file conf-rollback
-
-build-cli-linux: linux conf-local build-file-cli conf-rollback
+build-cli-mac: mac build-file-cli
 
 run-mac: mac
 	go run main.go
